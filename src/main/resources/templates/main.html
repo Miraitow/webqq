@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web聊天室</title>
+    <link rel="shortcut icon" href="images/logo.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./lib/jquery-mCustomScrollbar/css/jquery.mCustomScrollbar.min.css" />
+    <link rel="stylesheet" href="./lib/jquery-emoji/css/jquery.emoji.css" />
+</head>
+<style>
+    body {
+        background: url('/images/图片.jpg') no-repeat center center;
+        background-size: cover;
+        font-family: "华文楷体";
+        font-size: 24px;
+    }
+    .image0{
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        float: left;
+        margin: 8px 0 0 3px;
+    }
+    .image1{
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        float: right;
+        margin: 8px 3px 0 0;
+    }
+    .air{
+        width: 5px;
+        height: 20px;
+        background-color: #ffffff;
+        float: left;
+        margin: 15px 5px 5px 5px;
+        border-radius: 3px;
+    }
+    #contains{
+        background-color: #ffffff;
+        width: 900px;
+        height: 600px;
+        margin: 50px auto;
+        border-radius: 10px;
+        box-shadow:0 0 2px rgb(214, 209, 209);
+        overflow: hidden;
+    }
+    #username{
+        width: 100%;
+        height: 50px;
+        color: #ffffff;
+        background-color: #006a71;
+        line-height: 50px;
+    }
+    #Inchat{
+        width: 100%;
+        height: 28px;
+        color: #ffffff;
+        background-color: #006a71;
+        line-height: 28px;
+        text-align: center;
+        border-top: 2px solid #ffffff;
+    }
+    #left{
+        width: 72%;
+        height: 600px;
+        float: left;
+        position: relative;
+    }
+
+    #content{
+        background-color: #ffffff;
+        width: 100%;
+        height: 333px;
+        visibility: hidden;
+        border-bottom: 2px solid #eeeeee;
+        overflow-y: scroll;
+    }
+    #right{
+        width: 28%;
+        height: 520px;
+        float: right;
+    }
+    #hyList::-webkit-scrollbar {
+        display: none
+    }
+    #hyList{
+        height: 275px;
+        overflow-y: scroll;
+        background: #f9d9da;
+    }
+    #xtList::-webkit-scrollbar {
+        display: none
+    }
+    #xtList{
+        height: 175px;
+        overflow-y: scroll;
+        background: #76d2d1;
+    }
+    [contenteditable]:focus {
+        outline: none;
+    }
+    #input{
+        margin-bottom: 0px;
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        height: 265px;
+        font-size: 18px;
+        background-color: #ffffff;
+    }
+    #input_text::-webkit-scrollbar {
+        display: none
+    }
+    #input_text{
+        overflow-y: scroll;
+        width: 97%;
+        margin: 0 auto;
+        height: 120px;
+    }
+    .choose{
+        width: 95%;
+        margin: 0 auto;
+        height: 30px;
+        /*background-color: #68b0ab;*/
+    }
+    .choose img{
+        width: 25px;
+        height: 25px;
+    }
+    #mes_left{
+        padding: 8px;
+        display: flex;
+        float: left;
+        align-items: center;
+        color: #ffffff;
+        max-width: 250px;
+        background-color: #76d2d1;
+        margin: 5px 0 5px 10px;
+        border-radius: 5px;
+        font-size: 18px;
+    }
+    #mes_right{
+        padding: 8px;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        max-width: 250px;
+        background-color: #f9d9da;
+        float: right;
+        margin: 5px 10px 5px 0;
+        border-radius: 5px;
+        font-size: 18px;
+    }
+
+    .img img{
+        display: block;
+        max-width: 160px;
+    }
+    #hy,#xt{
+        display: block;
+        width: 100%;
+        height: 35px;
+        background-color: #006a71;
+        color: #ffffff;
+        margin: 0!important;
+        border-top: 1px solid #ffffff;
+        line-height: 35px;
+        box-shadow:
+                15px 15px 30px -10px rgba(0, 0, 0, 0.2),
+                inset 20px 20px 15px rgba(255, 255, 255, 0.7),
+                -15px -15px 35px rgba(255, 255, 255, 0.7),
+                inset -1px 1px 10px rgba(0, 0, 0, 0.5);
+
+    }
+
+    #submit{
+        width: 55px;
+        height: 30px;
+        border-radius: 5px;
+        color: #ffffff;
+        background-color: #006a71;
+        text-align: center;
+        line-height: 30px;
+        position: absolute;
+        right: 10px;
+    }
+
+    .name{
+        width: 98%;
+        height: 30px;
+        line-height: 30px;
+        background-color: #76d2d1;
+        color: rgb(24, 144, 255);
+        margin: 3px auto;
+        border-radius: 3px;
+        box-shadow:0 0 2px rgb(214, 209, 209);
+        font-size: 20px;
+    }
+</style>
+<body >
+<div id = "contains" >
+    <div id="username"><div style="text-align: left; color: #ffffff">用户：张三<span>-在线</span></div></div>
+    <div id="Inchat"></div>
+    <div id="left">
+<!--        聊天区域-->
+        <div id="content">
+
+        </div>
+<!--        输入区域-->
+        <div id="input">
+            <div class="choose">
+                <img src="images/xiaolian.png" class="face">
+                <label title="图片" class="file">
+                    <img src="images/tupiantubiao.png">
+                    <input type="file" id="file" style="display: none;">
+                </label>
+
+            </div>
+            <div type="text" id="input_text" contenteditable ></div>
+            <div id="submit" >发送</div>
+        </div>
+    </div>
+    <div id="right">
+        <p id="hy" style="text-align: center;">用户列表</p>
+        <div id="hyList">
+
+        </div>
+        <p id="xt" style="text-align: center">系统消息</p>
+        <div id="xtList">
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<script>
+    let toName;//点击去给谁发消息
+    let username;
+
+    //点击好友名称展示相关消息
+    function showChat(name){
+        toName = name;
+        //现在聊天框
+        $("#content").html("");
+        $("#content").css("visibility","visible");  //显示聊天框可见
+        $("#Inchat").html("当前正与"+toName+"聊天");
+        //从localStorage中获取历史信息
+        const chatData = localStorage.getItem(toName);
+        if (chatData != null){
+            $("#content").html(chatData);
+        }
+    }
+    // 发送图片功能
+    $('#file').on('change', function() {
+        var file = this.files[0];
+        console.log(file)
+        var fr = new FileReader()
+        fr.readAsDataURL(file)
+        fr.onloadend = function() {
+            // 图片用base64码表示
+            var dataURL = fr.result;
+            // 显示图片
+            $("#input_text").html($("#input_text").html()
+                + ' <div class="img"><img src='+dataURL+' ></div>');
+        }
+    })
+
+    //显示表情
+    $('.face').on('click',function() {
+        $('#input_text').emoji({
+            button:'.face',
+            showTab:true,
+            animation: 'slide',
+            position: 'topRight',
+            icons: [{
+                name: "贴吧表情",
+                path: "lib/jquery-emoji/img/tieba/",
+                maxNum: 50,
+                file: ".jpg",
+                placeholder: ":{alias}:",
+                alias: {
+                    1: "hehe",
+                    2: "haha",
+                    3: "tushe",
+                    4: "a",
+                    5: "ku",
+                    6: "lu",
+                    7: "kaixin",
+                    8: "han",
+                    9: "lei",
+                    10: "heixian",
+                    11: "bishi",
+                    12: "bugaoxing",
+                    13: "zhenbang",
+                    14: "qian",
+                    15: "yiwen",
+                    16: "yinxian",
+                    17: "tu",
+                    18: "yi",
+                    19: "weiqu",
+                    20: "huaxin",
+                    21: "hu",
+                    22: "xiaonian",
+                    23: "neng",
+                    24: "taikaixin",
+                    25: "huaji",
+                    26: "mianqiang",
+                    27: "kuanghan",
+                    28: "guai",
+                    29: "shuijiao",
+                    30: "jinku",
+                    31: "shengqi",
+                    32: "jinya",
+                    33: "pen",
+                    34: "aixin",
+                    35: "xinsui",
+                    36: "meigui",
+                    37: "liwu",
+                    38: "caihong",
+                    39: "xxyl",
+                    40: "taiyang",
+                    41: "qianbi",
+                    42: "dnegpao",
+                    43: "chabei",
+                    44: "dangao",
+                    45: "yinyue",
+                    46: "haha2",
+                    47: "shenli",
+                    48: "damuzhi",
+                    49: "ruo",
+                    50: "OK"
+                },
+                title: {
+                    1: "呵呵",
+                    2: "哈哈",
+                    3: "吐舌",
+                    4: "啊",
+                    5: "酷",
+                    6: "怒",
+                    7: "开心",
+                    8: "汗",
+                    9: "泪",
+                    10: "黑线",
+                    11: "鄙视",
+                    12: "不高兴",
+                    13: "真棒",
+                    14: "钱",
+                    15: "疑问",
+                    16: "阴脸",
+                    17: "吐",
+                    18: "咦",
+                    19: "委屈",
+                    20: "花心",
+                    21: "呼~",
+                    22: "笑脸",
+                    23: "冷",
+                    24: "太开心",
+                    25: "滑稽",
+                    26: "勉强",
+                    27: "狂汗",
+                    28: "乖",
+                    29: "睡觉",
+                    30: "惊哭",
+                    31: "生气",
+                    32: "惊讶",
+                    33: "喷",
+                    34: "爱心",
+                    35: "心碎",
+                    36: "玫瑰",
+                    37: "礼物",
+                    38: "彩虹",
+                    39: "星星月亮",
+                    40: "太阳",
+                    41: "钱币",
+                    42: "灯泡",
+                    43: "茶杯",
+                    44: "蛋糕",
+                    45: "音乐",
+                    46: "haha",
+                    47: "胜利",
+                    48: "大拇指",
+                    49: "弱",
+                    50: "OK"
+                }
+            }, {
+                name: "QQ高清",
+                path: "lib/jquery-emoji/img/qq/",
+                maxNum: 91,
+                excludeNums: [41, 45, 54],
+                file: ".gif",
+                placeholder: "#qq_{alias}#"
+            }, {
+                name: "emoji高清",
+                path: "lib/jquery-emoji/img/emoji/",
+                maxNum: 84,
+                file: ".png",
+                placeholder: "#emoji_{alias}#"
+            }]
+
+        })
+    })
+
+    $(function () {
+        $.ajax({
+            url:"getUsername",
+            success:function (res) {
+                username = res;
+            },
+            async:false //同步请求，只有上面好了才会接着下面操作
+        });
+        //建立websocket连接
+        //获取host解决后端获取httpsession的空指针异常
+        const host = window.location.host;
+        const ws = new WebSocket("ws://" + host + "/chat");
+        ws.onopen = function (evt) {
+            $("#username").html("<div class='air'></div><div style=\"text-align: left;color: #ffffff;\">用户："+ username +"<span>-在线</span></div>");
+        }
+        //接受消息
+        ws.onmessage = function (evt) {
+            //获取服务端推送的消息
+            const dataStr = evt.data;
+            //将dataStr转换为json对象
+            const res = JSON.parse(dataStr);
+            //判断是否是系统消息
+            if(res.system){
+                //系统消息
+                //1.好友列表展示
+                //2.系统广播的展示
+                let names = res.message;
+                let userlistStr = "";
+                let broadcastListStr = "";
+                let temp = "";
+                for (let name of names){
+                    if (name != username){ //用户列表展示把自己过滤掉
+                        temp = "<div class='name'>" +
+                            "<a style=\"text-align: center; display: block;\" " +
+                            "onclick='showChat(\"" + name +  "\")'>" + name + "</a></div>";
+                        userlistStr = userlistStr + temp;
+                        broadcastListStr += "<div class='name' style='background-color: #f9d9da;'>" +
+                            "<div style='text-align: center'>"+ name +"上线了</div></div>";
+                    }
+                }
+                //渲染用户列表和系统消息
+                $("#hyList").html(userlistStr);
+                $("#xtList").html(broadcastListStr);
+            }
+            else {
+                //不是系统消息
+                let str = "<div><div><img src='images/logo1.jpg' class='image0'></div><div id='mes_left'>"+ res.message +"</div><div style='clear: both'></div></div>";
+                if (toName === res.fromName) {
+                    $("#content").append(str);
+                }
+                //拿取历史聊天记录
+                let chatData = localStorage.getItem(res.fromName);
+                if (chatData != null){
+                    str = chatData + str;
+                }
+                //保存聊天消息
+                localStorage.setItem(res.fromName,str);
+            };
+        }
+        ws.onclose = function () {
+            $("#username").html("<div class='air'></div><div style=\"text-align: left;color: #ffffff;\">用户："+ username +"<span>-离线</span></div>");
+        }
+
+
+        //发送消息
+        $("#submit").click(function () {
+            //1.获取输入的内容
+            let data = $("#input_text").html();
+            console.log(data)
+            //2.清空发送框
+            $("#input_text").html("");
+            let json = {"toName": toName, "message": data};
+            console.log(json)
+            //将数据展示在聊天区
+            let str = "<div><div><img src='images/logo.jpg' class='image1'></div><div id='mes_right'>"
+                + data + "</div><div style='clear: both'></div></div>";
+            $("#content").append(str);
+            let chatData = localStorage.getItem(toName);
+            if (chatData != null) {
+                str = chatData + str;
+            }
+            localStorage.setItem(toName, str);
+            //3.发送数据
+            ws.send(JSON.stringify(json));
+            })
+    })
+</script>
+
+<!--外部链接引入-->
+<script src="https://eqcn.ajz.miesnfu.com/wp-content/plugins/wp-3d-pony/live2dw/lib/L2Dwidget.min.js"></script>
+<script src="./lib/jquery-mCustomScrollbar/script/jquery.mCustomScrollbar.min.js"></script>
+<script src="./lib/jquery-emoji/js/jquery.emoji.min.js"></script>
+
+<script>
+    /*初始化模型*/
+    L2Dwidget.init({ "model": { jsonPath:
+                "https://unpkg.com/live2d-widget-model-koharu@1.0.5/assets/koharu.model.json",
+            "scale": 1 }, "display": { "position": "right", "width": 110, "height": 150,
+            "hOffset": 0, "vOffset": -20 }, "mobile": { "show": true, "scale": 0.5 },
+        "react": { "opacityDefault": 0.8, "opacityOnHover": 0.1 } });
+</script>
+</html>
